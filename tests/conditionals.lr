@@ -1,0 +1,13 @@
+def conditionalTest{x y}{
+	if(x = 3 & y = 3){
+		pt{"x is three!"}
+		ptln{" ...and y is also three!"}
+	}
+	else if(y = 3)
+		ptln{"just y is three."}
+	else
+		ptln{"neither x or y are three."}
+}
+conditionalTest{3 3}
+conditionalTest{2 3}
+conditionalTest{2 7}

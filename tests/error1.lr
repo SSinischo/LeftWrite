@@ -1,0 +1,3 @@
+def a 3
+ptln{a + 2}
+~all items in a list must be unary

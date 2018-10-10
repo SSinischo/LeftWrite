@@ -1,0 +1,15 @@
+_include "dictionary.lr"
+def d newDictionary{NULL}
+def alphaArr ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"]
+ptln{"inserting a-z..."}
+for(i 0 (i<length{alphaArr}) (i+1)){
+	d.store{i (alphaArr#i)}
+}
+ptln{"dictionary size is: " d.size}
+d.printPreorder{}
+ptln{"removing first 10 letters..."}
+for(i 0 (i<10) (i+1)){
+	d.remove{i}
+}
+ptln{"dictionary size is: " d.size}
+d.printPreorder{}

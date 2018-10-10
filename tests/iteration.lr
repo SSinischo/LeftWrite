@@ -1,0 +1,8 @@
+for(i 1 (i<=5) i+1){
+	ptln{"i is counting to 5: " i}
+}
+def j 5
+while(j>0){
+	ptln{"j is positive: " j}
+	set j (j-1)
+}

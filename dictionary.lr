@@ -1,0 +1,284 @@
+def newDictionary{operator} {
+	decl root
+	def size 0
+	def __newNode{key val parent} {
+		decl left
+		decl right
+		def leftHeight 0
+		def rightHeight 0
+		def height 1
+		return this
+	}
+	
+	def compare{a b}{
+		if(op?)
+			return op{a b}
+		else if(a > b){
+			return 1
+		}
+		else if(a < b){
+			return -1
+		}
+		return 0
+	}
+
+	def store{k v} {
+		if(!root?){
+			set root __newNode{k v NULL}
+			set size (size+1)
+			done
+		}
+		def looper{node}{
+			if(compare{k node.key} < 0){
+				if(node.left?){
+					return looper{node.left}
+				}
+				else{
+					def n __newNode{k v node}
+					set node.left n
+					return n
+				}
+			}
+			else if(node.right?)
+				return looper{node.right}
+			def n __newNode{k v node}
+			set node.right n
+			return n
+		}
+		def n looper{root}
+		set size (size+1)
+		insertionFixup{n}
+	}
+
+	def remove{k}{
+		def d findNode{k}
+
+		~find leaf
+		if(!d.left?){
+			if(d.right?) def direction "left"
+		}
+		else def direction "right"
+
+		def findLeaf{n}{
+			if(direction = "left"){
+				if(!n.left?)
+					return n
+				return findLeaf{n.left}
+			}
+			if(direction = "right"){
+				if(!n.right?)
+						return n
+					return findLeaf{n.right}
+			}
+		}
+		if(direction?){~not a leaf, so s
+			if(direction = "left")
+				def s findLeaf{d.right}
+			else
+				def s findLeaf{d.left}
+			swap s.key d.key
+			swap s.val d.val
+		}
+		else def s d
+		def p s.parent
+		set s.height 0
+		deletionFixUp{s}
+		
+		if(!p?){
+			set root NULL
+			return s
+		}
+		if(p.left = s){
+			if(s.left?){
+				set p.left s.left
+				set s.left.parent p
+			}
+			else if(s.right?){
+				set p.left s.right
+				set s.right.parent p
+			}
+			else
+				set p.left NULL
+		}
+		else{
+			if(s.left?){
+				set p.right s.left
+				set s.left.parent p
+			}
+			else if(s.right?){
+				set p.right s.right
+				set s.right.parent p
+			}
+			else
+				set p.right NULL
+		}
+		set size (size-1)
+		setBalance{p}
+		return s
+	}
+
+	def rotate{n r} {~rotates n to r
+		def p r.parent
+		if(r.left = n){
+			if(n.right?) set n.right.parent r
+			set r.left n.right
+			set n.right r
+		}
+		else{
+			if(n.left?) set n.left.parent r
+			set r.right n.left
+			set n.left r
+		}
+		set n.parent p
+		set r.parent n
+		setBalance{r}
+		setBalance{n}
+		if(!p?){done}
+		if(p.left = r)
+			set p.left n
+		else
+			set p.right n
+	}
+
+	def setBalance{n} {
+		if(n.left?)
+			set n.leftHeight n.left.height
+		else
+			set n.leftHeight 0
+		if(n.right?)
+			set n.rightHeight n.right.height
+		else
+			set n.rightHeight 0
+		if(n.leftHeight > n.rightHeight)
+			set n.height (n.leftHeight+1)
+		else
+			set n.height (n.rightHeight+1)
+	}
+
+	def favorite{n} {
+		if(n.rightHeight > n.leftHeight)
+			return n.right
+		else if(n.leftHeight > n.rightHeight)
+			return n.left
+	}
+		
+	def insertionFixup{n} {
+		if(root = n)
+			done
+		def p n.parent
+		def fav favorite{p}
+		if(!fav?){
+			~ptln{"Case 2, no favorite!"}
+			setBalance{p}
+			insertionFixup{p}
+		}
+		else if(fav != n){~parent favors sibling
+			~ptln{"Case 1, favorite!"}
+			setBalance{p}
+		}
+		else{
+			if((fav = p.left & n != fav.left) | (fav = p.right & n != fav.right)){
+				~ptln{"Case 3, not linear!"}
+				if(root = p){
+					ptln{"SETTINGROOT to " n.val}
+					set root n
+				}
+				rotate{fav n}
+				rotate{fav p}
+				setBalance{n}
+				setBalance{p}
+				setBalance{fav}
+			}
+			else{
+				~ptln{"Case 4, linear!"}
+				if(root = p){
+					set root n
+				}
+				rotate{n p}
+				setBalance{p}
+				setBalance{n}
+			}
+		}
+	}
+
+	def deletionFixUp{n}{
+		if(root = n){
+			done
+		}
+		def p n.parent
+		def fav favorite{p}
+		if(!fav?)
+			done
+		if(fav = n)
+			deletionFixUp{p}
+		else{
+			if(n.parent.right = n)
+				def z n.parent.left
+			else
+				def z n.parent.right
+			set fav favorite{z}
+			if(fav? & ((p.left = z & z.right = fav) | (p.right = z & z.left = fav))){
+				rotate{fav z}
+				rotate{fav p}
+				setBalance{fav}
+				setBalance{z}
+				setBalance{p}
+				if(root = p) set root fav
+				deletionFixUp{fav}
+			}
+			else{
+				rotate{z p}
+				setBalance{p}
+				setBalance{z}
+				if(root = p) set root z
+				if(!fav?)
+					done
+				else
+					deletionFixUp{z}
+			}
+		}
+	}
+
+	def findNode{k}{
+		def looper{node}{
+			if(compare{k node.key} = 0)
+				return node
+			if(compare{k node.key} > 0){
+				if(!node.left?){
+					ptln{"Lookup failed!"}
+					done
+				}
+				return looper{node.left}
+			}
+			if(!node.right?){
+				ptln{"Lookup failed!"}
+				done
+			}
+			return looper{node.right}
+		}
+		return looper{root}
+	}
+
+	def get{k} {
+		def n findNode{k}
+		return n.val
+	}
+
+	def printPreorder{} {
+		def preHelper{node indent}{
+			if(!node?)
+				done
+			for(i 0 (i<indent) i+1){
+				pt{"| "}
+			}
+			if(node.parent? & node.parent.left = node) pt{"[L] "}
+			else if(node.parent?) pt{"[R] "}
+			ptln{node.val}
+			preHelper{node.right (indent+1)}
+			preHelper{node.left (indent+1)}
+		}
+		preHelper{root 0}
+	}
+
+	return this
+}

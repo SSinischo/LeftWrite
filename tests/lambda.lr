@@ -1,0 +1,4 @@
+def addThisToSquareLambda lambda{x}{lambda{y}{y*y+x}}
+def addTwentyToSquare addThisToSquareLambda{20}
+def addTwentyToSquareOfFive addTwentyToSquare{5}
+ptln{"square of 5, plus twenty is: " addTwentyToSquareOfFive}

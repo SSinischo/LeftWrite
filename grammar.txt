@@ -1,0 +1,89 @@
+body		:	O_BRACE statements C_BRACE
+
+statements	:	statement
+			|	statement statements
+			
+statement	:	expression
+			|	definition
+			|	assignment
+			|	ifStatement
+			|	forLoop
+			|	whileLoop
+			|	RETURN expression
+
+expression	:	unary
+			|	binary
+			
+binary		:	binary2 op1 binary
+			| 	binary2
+
+binary2		:	binary3 op2 binary2
+			|	binary3
+			
+binary3		:	binary4 op3 binary3
+			|	binary4
+			
+binary4		:	unary op4 binary4
+			|	
+	
+op1			:	EQUALS
+			|	LESS_THAN
+			|	GREATER_THAN
+			|	AND
+			|	OR
+
+op2			: 	PLUS
+			|	MINUS
+
+op3			:	MULTIPLY
+			|	DIVIDE
+			
+op4			:	EXPONENT
+			|	MODULO
+			
+definition	:	DEF object
+			|	DEF object expression
+			|	DEF object procedure
+			
+assignment	:	SET object expression
+			|	SET object procedure
+			
+procedure	:	list body
+
+lambda		:	LAMBDA procedure
+
+ifStatement : 	IF unary body optIfElse
+
+forLoop		:	FOR O_BRACE VARIABLE COMMA unary COMMA expression COMMA statement C_BRACE body
+
+whileLoop	:	WHILE unary body
+
+object		:	VARIABLE
+			|	VARIABLE DOT object
+	
+unary		:	INTEGER
+			|	STRING
+			|	BOOLEAN
+			|	object
+			|	NOT unary
+			|	MINUS unary
+			|	list
+			|	arrayDef
+			|	O_PAREN expression C_PAREN
+			|	fnCall
+			|	lambda
+			
+fnCall		:	object list
+
+optIfElse	:	ELSE body
+			|	ELSE ifStatement
+			|	*empty*
+
+list		:	O_BRACE optListItems C_BRACE //can also be used to convert array to list? do jlater
+
+arrayDef	:	O_BRACKET listItems C_BRACKET
+
+listItems	:	expression
+			|	expression COMMA listItems
+			|	*empty*
+				

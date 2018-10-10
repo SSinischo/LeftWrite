@@ -1,0 +1,9 @@
+def myList {1 1 2 3 5 8 13}
+ptln{"myList is: " myList}
+lPrep{myList "hello"}
+lApp{myList "goodbye"}
+ptln{"after appending, it is: " myList}
+def myArray toArray{myList}
+ptln{"we turned myList into myArray, which is: " myArray}
+ptln{"the length of myArray is: " length{myArray}}
+ptln{"the sixth index is: " (myArray#6)}

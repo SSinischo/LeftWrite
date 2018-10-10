@@ -1,0 +1,48 @@
+
+def delay{obj}{
+	lambda{}{obj}
+}
+
+def force{obj}{
+	obj{}
+}
+
+def scar{s}{
+	s.car
+}
+
+def scdr{s}{
+	force{s.cdr}
+}
+
+def scons{a b}{
+	def car a
+	def cdr delay{b}
+	return this
+}
+
+def sForEach{proc s}{
+	if(!s?) done
+	proc{s.car}
+	sForEach{s.cdr}
+}
+
+def sDisplay{n s}{
+	def iter{n s}{
+		if(n = 0 | !n?)
+			done
+		pt{scar{s} " "}
+		iter{(n-1) scdr{s}}
+	}
+	pt{"{"}
+	iter{n s}
+	ptln{"}..."}
+}
+
+def ints{n}{
+	return scons{n ints{(n+1)}}
+}
+
+def s ints{1}
+
+sDisplay{3 s}

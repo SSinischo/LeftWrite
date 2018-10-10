@@ -1,0 +1,4 @@
+def a "hello"
+def b OBJECT
+ptln{(a + b)}
+~cannot add a string and object

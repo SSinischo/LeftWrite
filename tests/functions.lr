@@ -1,0 +1,20 @@
+def addToFunction{value tag}{
+	~value is captured in enclosing scope of returned functions
+	def adderPlus{x y}{
+		return (x+y+value)
+	}
+
+	def subberPlus{x y}{
+		return (x-y+value)
+	}
+
+	if(tag = "adder")
+		return adderPlus
+	else
+		return subberPlus
+}
+
+def addFunc addToFunction{10 "adder"}
+def subFunc addToFunction{7 "subber"}
+ptln{"addFunc (1 + 2 + 10): " addFunc{1 2}}
+ptln{"subFunc: (5 - 6 + 7): " subFunc{5 6}}
